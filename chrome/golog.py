@@ -8,6 +8,7 @@ import names
 
 
 def create_gologin_profile(token, proxy):
+    host,port,username,password = proxy.split(":")
     gl = GoLogin({
         "token": token
     })
@@ -23,11 +24,11 @@ def create_gologin_profile(token, proxy):
         },
         'proxyEnabled': True, # Specify 'false' if not using proxy
         'proxy': {
-            'mode': 'socks5',
-            "host":"139.99.82.10",
-            "port":"51790",
-            "username": '',
-            "password": '',
+            'mode': 'http',
+            "host":host,
+            "port":port,
+            "username": username,
+            "password": password,
         },
         "webRTC": {
             "mode": "alerted",
@@ -37,12 +38,12 @@ def create_gologin_profile(token, proxy):
     })
 
     #         else: # Create profile with proxy
-    print("Profile_id: ",profile_id)
+    # print("Profile_id: ",profile_id)
     return profile_id
 
 
 token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MzVhMDRmYmY5Y2FjZTE1NThlNWIxOGMiLCJ0eXBlIjoiZGV2Iiwiand0aWQiOiI2MzVhMDUwZDhmNjdlN2I3NGZiOGNkOGYifQ.BHOEimvInQuW2NcIwNyqt6-Kip92JzgSU7X8Y4sD7jE"
-profile_id = create_gologin_profile(token, "")
+profile_id = create_gologin_profile(token, "202.182.117.108:39974:lazyguys689:loveblue0810")
 gl = GoLogin({
     "token": token,
     "profile_id": profile_id,
@@ -60,32 +61,33 @@ driver = webdriver.Chrome(executable_path="gologin_lib\\chromedriver.exe", optio
 driver.set_window_size(480,480)
 
 
-list_mail = open('mail.txt').read().split("\n")
-mail = list_mail[2].split("|")[0]
-password = list_mail[0].split("|")[1]
 name = names.get_full_name().split(" ")
+mail = name[0].lower()+name[1].lower() + str(random.randint(10000000,999999999999999999)) + "@outlook.com"
 
-sleep(randint(1,3))
 driver.get("https://www.facebook.com/reg")
-sleep(randint(1,3))
-driver.find_element("name",'firstname').send_keys(name[0])
-sleep(randint(1,3))
-driver.find_element("name",'lastname').send_keys(name[1])
-sleep(randint(1,3))
-driver.find_element("name",'reg_email__').send_keys(mail)
-sleep(randint(1,3))
-driver.find_element("name",'reg_email_confirmation__').send_keys(mail)
-sleep(randint(1,3))
-driver.find_element("name",'reg_passwd__').send_keys(password)
-sleep(randint(1,3))
+sleep(2)
 
+try:
+    driver.find_element("xpath",'//input[@value="Back"]').click()
+except:pass
+driver.find_element("name",'firstname').send_keys(name[0])
+driver.find_element("name",'lastname').send_keys(name[1])
+driver.find_element("name",'reg_email__').send_keys(mail)
+driver.find_element("name",'reg_email_confirmation__').send_keys(mail)
+passw = "helloanhem" + str(random.randint(10000000,999999999999999999))
+driver.find_element("name",'reg_passwd__').send_keys(passw)
 
 driver.execute_script(f'document.querySelector("#day").value = {random.randint(1,29)}')
-sleep(randint(1,3))
 driver.execute_script(f'document.querySelector("#month").value = {random.randint(1,10)}')
-sleep(randint(1,3))
 driver.execute_script(f'document.querySelector("#year").value = {random.randint(1990,2000)}')
-sleep(randint(1,3))
 driver.find_elements("name", "sex")[random.randint(0,1)].click()
 
 driver.find_element("name","websubmit").click()
+try:
+    sleep(5)
+    driver.execute_script('document.querySelectorAll("span")[8].click()')
+    driver.quit()
+    open("success.txt","a").write(mail+"|"+passw + "\n")
+except:
+    driver.quit()
+    print("fail")
