@@ -1,4 +1,6 @@
-list_ip = open("ip.txt","r").read().split("\n")
-open("ip.txt","w").write("")
-for i in list_ip:
-    open("ip.txt","a").write(i.split("|")[0]+"\n")
+import uiautomator2 as u2
+import adb_control
+
+print(adb_control.get_list_devices())
+d = u2.connect()
+print(d.info)
