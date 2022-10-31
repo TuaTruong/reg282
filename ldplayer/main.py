@@ -1,3 +1,5 @@
+from concurrent.futures import thread
+from tkinter import E
 import uiautomator2 as u2
 import time
 import names
@@ -6,7 +8,7 @@ import threading
 import adb_control
 import subprocess
 lock = threading.Lock()
-run = True
+
 def reg(id):
     try:
         ip = random.choice(open("ip.txt").read().split("\n"))
@@ -20,7 +22,7 @@ def reg(id):
 
         # CLICK CREATE ACCOUNT BUTTON 
         create_account_btn = d.xpath('//*[@content-desc="Create New Facebook Account"]')
-        if create_account_btn.wait(30):
+        if create_account_btn.wait(60):
             create_account_btn.click()
 
         # CLICK NEXT BUTTON 
@@ -83,16 +85,15 @@ def reg(id):
         # CHECK LIVE
         d.xpath('//*[@text="Sign Up"]').click()
         if d.xpath('//*[@content-desc="Continue"]').wait(30):
-            print("die")
-            if list_thread[-1].join():
-                run = True
+            threading.Thread(target=start,args={id,}).start()
             return email + "|"+ password
         else:
-            if list_thread[-1].join():
-                run = True
+            threading.Thread(target=start,args={id,}).start()
             return ""
     except:
         print("Fail")
+        threading.Thread(target=start,args={id,}).start()
+            
 
 def start(id):
     kq = reg(id)
@@ -103,15 +104,10 @@ def start(id):
         print("uncatched")
     lock.release()
 
-list_thread = []
+
+
+
 for device in adb_control.get_list_devices():
-    list_thread.append(threading.Thread(target=start,args={device,}))
-
-
-while True:
-    if run:
-        run = False
-        for thread in list_thread:
-            thread.start()
-            time.sleep(10)
+    threading.Thread(target=start,args={device,}).start()
+    time.sleep(5)
 
