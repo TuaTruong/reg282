@@ -42,7 +42,7 @@ def reg(id):
 
         # BIRTHDAY
         birthday_select = d.xpath('//android.widget.ScrollView/android.widget.RelativeLayout[1]/android.widget.LinearLayout[1]/android.widget.LinearLayout[2]')
-        if birthday_select.wait(2):
+        if birthday_select.wait(5):
             birthday_select.click()
         time.sleep(1)
         # swipe month 
@@ -62,7 +62,7 @@ def reg(id):
         next_btn.click()
 
         # GENDER
-        if d.xpath('//*[@text="Female"]').wait(2):
+        if d.xpath('//*[@text="Female"]').wait(5):
             d.xpath(f'//*[@text="{random.choice(["Female","Male"])}"]').click()
         next_btn.click()
         time.sleep(2)
@@ -70,7 +70,7 @@ def reg(id):
         #EMAIL
         email = firstname+lastname+str(random.randint(1000000000,999999999999999)) + "@outlook.com"
         sign_up_email = d.xpath('//*[@text="Sign Up With Email Address"]')
-        if sign_up_email.wait(2):
+        if sign_up_email.wait(5):
             sign_up_email.click()
         d.send_keys(email)
         next_btn.click()
@@ -84,7 +84,7 @@ def reg(id):
 
         # CHECK LIVE
         d.xpath('//*[@text="Sign Up"]').click()
-        if d.xpath('//*[@content-desc="Continue"]').wait(30):
+        if d.xpath('//*[@content-desc="Continue"]').wait(25):
             threading.Thread(target=start,args={id,}).start()
             return email + "|"+ password
         else:
@@ -93,6 +93,8 @@ def reg(id):
     except:
         print("Fail")
         threading.Thread(target=start,args={id,}).start()
+        return ""
+        
             
 
 def start(id):
@@ -109,5 +111,5 @@ def start(id):
 
 for device in adb_control.get_list_devices():
     threading.Thread(target=start,args={device,}).start()
-    time.sleep(5)
+    time.sleep(2)
 

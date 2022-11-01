@@ -7,7 +7,7 @@ from datetime import datetime
 import os
 import pyotp
 
-
+print(os.getcwd())
 ld_path = os.getcwd()
 
 button = {}
@@ -159,3 +159,5 @@ def change_keyboard(device):
 
 def input_unicode_text(device, txt):
 	subprocess.call("ADB\\adb.exe -s "+device+" shell am broadcast -a ADB_INPUT_TEXT --es msg '" + txt + "'", shell=True, creationflags=CREATE_NO_WINDOW)
+
+print(get_list_devices())

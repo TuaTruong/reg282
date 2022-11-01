@@ -1,3 +1,4 @@
+from asyncio import subprocess
 from time import sleep
 import uiautomator2 as u2
 import adb_control
@@ -8,4 +9,4 @@ def clear(i):
     sleep(2)
 for i in adb_control.get_list_devices():
     threading.Thread(target=clear, args={i,}).start()
-    sleep
+    sleep(1)
